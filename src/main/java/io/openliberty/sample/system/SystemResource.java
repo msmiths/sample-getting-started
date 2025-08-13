@@ -56,7 +56,8 @@ public class SystemResource {
             var properties = System.getProperties();
 
             ListSecretsRequest listRequest = ListSecretsRequest.builder()
-                    .build();
+                .maxResults(100)
+                .build();
             ListSecretsResponse valueResponse = secretsManager.listSecrets(listRequest);
 
             var secrets = valueResponse.secretList();
@@ -65,6 +66,8 @@ public class SystemResource {
                 var value = getSecret(secret.arn());
                 if (value != null) {
                     properties.put(name, value);
+                } else {
+                    properties.put(name, "null");
                 }
             } // FOR
 
