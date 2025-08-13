@@ -11,14 +11,18 @@
 
 package io.openliberty.sample.system;
 
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.inject.Inject;
-
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest;
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueResponse;
@@ -26,9 +30,6 @@ import software.amazon.awssdk.services.secretsmanager.model.ListSecretsRequest;
 import software.amazon.awssdk.services.secretsmanager.model.ListSecretsResponse;
 import software.amazon.awssdk.services.secretsmanager.model.SecretListEntry;
 import software.amazon.awssdk.services.secretsmanager.model.SecretsManagerException;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
 
 @RequestScoped
 @Path("/properties")
@@ -37,8 +38,14 @@ public class SystemResource {
     @Inject
     SystemConfig systemConfig;
 
-    @Inject
     SecretsManagerClient secretsManager;
+
+    public SystemResource() {
+        secretsManager = SecretsManagerClient.builder()
+            .region(Region.of("us-east-1"))
+            .credentialsProvider(DefaultCredentialsProvider.builder().build())
+            .build();
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
