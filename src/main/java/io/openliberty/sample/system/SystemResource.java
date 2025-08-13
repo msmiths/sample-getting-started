@@ -63,7 +63,9 @@ public class SystemResource {
             for (SecretListEntry secret : secrets) {
                 var name = secret.name();
                 var value = getSecret(secret.arn());
-                properties.put(name, value);
+                if (value != null) {
+                    properties.put(name, value);
+                }
             } // FOR
 
             return Response.ok(System.getProperties()).build();
