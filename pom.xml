@@ -15,10 +15,12 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
+
     <!-- Plugin versions -->
     <version.liberty-maven-plugin>3.7.1</version.liberty-maven-plugin>
     <version.maven-failsafe-plugin>3.0.0</version.maven-failsafe-plugin>
     <version.maven-surefire-plugin>3.0.0</version.maven-surefire-plugin>
+
     <!-- Liberty configuration -->
     <liberty.var.default.http.port>9080</liberty.var.default.http.port>
     <liberty.var.default.https.port>9443</liberty.var.default.https.port>
@@ -61,13 +63,13 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
-      <version>6.2.3.Final</version>
+      <version>6.2.12.Final</version>
       <scope>test</scope>
     </dependency>
     <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-json-binding-provider</artifactId>
-        <version>6.2.3.Final</version>
+        <version>6.2.12.Final</version>
         <scope>test</scope>
     </dependency>
     <dependency>
@@ -108,6 +110,7 @@
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>${version.maven-failsafe-plugin}</version>
         <configuration>
+          <workingDirectory>${project.basedir}/src/main/resources</workingDirectory>
           <systemPropertyVariables>
             <http.port>${liberty.var.default.http.port}</http.port>
             <https.port>${liberty.var.default.https.port}</https.port>
@@ -117,6 +120,11 @@
             <include>**/*IT.java</include>
           </includes>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.4.0</version>
       </plugin>
     </plugins>
   </build>

@@ -64,7 +64,7 @@ public class HealthUtilIT {
 
   public static void changeProperty(String oldValue, String newValue) {
     try {
-      String fileName = System.getProperty("user.dir").split("target")[0] + "/resources/CustomConfigSource.json";
+      String fileName = System.getProperty("user.dir").split("src")[0] + "/target/classes/META-INF/CustomConfigSource.json";
       BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)));
       String line = "";
       String oldContent = "", newContent = "";
@@ -76,7 +76,7 @@ public class HealthUtilIT {
       FileWriter writer = new FileWriter(fileName);
       writer.write(newContent);
       writer.close();
-      Thread.sleep(600);
+      Thread.sleep(3500);
     } catch (Exception e) {
       e.printStackTrace();
     }
