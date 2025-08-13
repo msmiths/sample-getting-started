@@ -19,6 +19,13 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.core.Response;
+import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
+import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest;
+import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueResponse;
+import software.amazon.awssdk.services.secretsmanager.model.ListSecretsRequest;
+import software.amazon.awssdk.services.secretsmanager.model.ListSecretsResponse;
+import software.amazon.awssdk.services.secretsmanager.model.SecretListEntry;
+import software.amazon.awssdk.services.secretsmanager.model.SecretsManagerException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -27,19 +34,52 @@ import jakarta.ws.rs.Produces;
 @Path("/properties")
 public class SystemResource {
 
-	@Inject
-	SystemConfig systemConfig;
+    @Inject
+    SystemConfig systemConfig;
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Timed(name = "getPropertiesTime", description = "Time needed to get the properties of a system")
-	@Counted(absolute = true, description = "Number of times the properties of a systems is requested")
-	public Response getProperties() {
-		if (!systemConfig.isInMaintenance()) {
-			return Response.ok(System.getProperties()).build();
-		} else {
-			return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("ERROR: Service is currently in maintenance.")
-					.build();
-		}
-	}
+    @Inject
+    SecretsManagerClient secretsManager;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Timed(name = "getPropertiesTime", description = "Time needed to get the properties of a system")
+    @Counted(absolute = true, description = "Number of times the properties of a systems is requested")
+    public Response getProperties() {
+        if (!systemConfig.isInMaintenance()) {
+            var properties = System.getProperties();
+
+            ListSecretsRequest listRequest = ListSecretsRequest.builder()
+                    .build();
+            ListSecretsResponse valueResponse = secretsManager.listSecrets(listRequest);
+
+            var secrets = valueResponse.secretList();
+            for (SecretListEntry secret : secrets) {
+                var name = secret.name();
+                var value = getSecret(secret.arn());
+                properties.put(name, value);
+            } // FOR
+
+            return Response.ok(System.getProperties()).build();
+        } else {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE)
+                .entity("ERROR: Service is currently in maintenance.")
+                .build();
+        }
+    }
+
+    private String getSecret(String arn) {
+        String secretValue = null;
+        try {
+            GetSecretValueRequest valueRequest = GetSecretValueRequest.builder()
+                .secretId(arn)
+                .build();
+            GetSecretValueResponse valueResponse = secretsManager.getSecretValue(valueRequest);
+            secretValue = valueResponse.secretString();
+        } catch (SecretsManagerException e) {
+            e.printStackTrace();
+            System.err.println(e.awsErrorDetails().errorMessage());
+        }
+
+        return secretValue;
+    }
 }
