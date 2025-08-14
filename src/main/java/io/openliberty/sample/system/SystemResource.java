@@ -71,7 +71,7 @@ public class SystemResource {
                 }
             } // FOR
 
-            return Response.ok(System.getProperties()).build();
+            return Response.ok(properties).build();
         } else {
             return Response.status(Response.Status.SERVICE_UNAVAILABLE)
                 .entity("ERROR: Service is currently in maintenance.")
