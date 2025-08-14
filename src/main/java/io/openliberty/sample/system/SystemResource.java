@@ -88,7 +88,6 @@ public class SystemResource {
             GetSecretValueResponse valueResponse = secretsManager.getSecretValue(valueRequest);
             secretValue = valueResponse.secretString();
         } catch (SecretsManagerException e) {
-            e.printStackTrace();
             System.err.println(e.awsErrorDetails().errorMessage());
         }
 
