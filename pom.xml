@@ -25,7 +25,6 @@
     <liberty.var.default.http.port>9080</liberty.var.default.http.port>
     <liberty.var.default.https.port>9443</liberty.var.default.https.port>
     <liberty.var.app.context.root>/</liberty.var.app.context.root>
-    <aws.java.sdk.version>2.32.20</aws.java.sdk.version> 
   </properties>
 
   <dependencies>
@@ -36,31 +35,6 @@
       <version>6.0</version>
       <type>pom</type>
       <scope>provided</scope>
-    </dependency>
-
-    <!-- AWS provider dependencies -->
-    <dependency>
-      <groupId>software.amazon.awssdk</groupId>
-      <artifactId>bom</artifactId>
-      <version>${aws.java.sdk.version}</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>software.amazon.awssdk</groupId>
-      <artifactId>iam</artifactId>
-      <version>${aws.java.sdk.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>software.amazon.awssdk</groupId>
-      <artifactId>sts</artifactId>
-      <version>${aws.java.sdk.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>software.amazon.awssdk</groupId>
-      <artifactId>secretsmanager</artifactId>
-      <version>${aws.java.sdk.version}</version>
     </dependency>
 
     <!-- Dependencies for tests -->
