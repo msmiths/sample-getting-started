@@ -128,19 +128,29 @@ function getSystemPropertiesRequest() {
         }
         // Request successful, read the response
         var resp = JSON.parse(req.responseText);
-        for (var i = 0; i < propToDisplay.length; i++) {
-            var key = propToDisplay[i];
-            if (resp.hasOwnProperty(key)) {
-                var row = document.createElement("tr");
-                var keyData = document.createElement("td");
-                keyData.innerText = key;
-                var valueData = document.createElement("td");
-                valueData.innerText = resp[key];
-                row.appendChild(keyData);
-                row.appendChild(valueData);
-                table.appendChild(row);
-            }
-        }
+        Object.entries(resp).forEach(([key, value]) => {
+            var row = document.createElement("tr");
+            var keyData = document.createElement("td");
+            keyData.innerText = key;
+            var valueData = document.createElement("td");
+            valueData.innerText = value;
+            row.appendChild(keyData);
+            row.appendChild(valueData);
+            table.appendChild(row);
+        });
+        // for (var i = 0; i < propToDisplay.length; i++) {
+        //     var key = propToDisplay[i];
+        //     if (resp.hasOwnProperty(key)) {
+        //         var row = document.createElement("tr");
+        //         var keyData = document.createElement("td");
+        //         keyData.innerText = key;
+        //         var valueData = document.createElement("td");
+        //         valueData.innerText = resp[key];
+        //         row.appendChild(keyData);
+        //         row.appendChild(valueData);
+        //         table.appendChild(row);
+        //     }
+        // }
 
         addSourceRow(table, url);
     };
