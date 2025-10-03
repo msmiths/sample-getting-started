@@ -38,8 +38,9 @@ public class SystemResource {
 		if (!systemConfig.isInMaintenance()) {
 			return Response.ok(System.getProperties()).build();
 		} else {
-			return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("ERROR: Service is currently in maintenance.")
-					.build();
+			return Response.status(Response.Status.SERVICE_UNAVAILABLE)
+				.entity("ERROR: Service is currently in maintenance.")
+				.build();
 		}
 	}
 }
